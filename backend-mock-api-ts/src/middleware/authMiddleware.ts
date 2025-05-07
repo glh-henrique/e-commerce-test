@@ -3,8 +3,14 @@ import jwt from 'jsonwebtoken';
 
 const SECRET = 'supersecretkey';
 
+interface JwtPayload {
+  id: number;
+  email: string;
+  role: 'admin' | 'user';
+}
+
 export interface AuthRequest extends Request {
-  user?: { id: number; email: string };
+  user?: JwtPayload;
 }
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
@@ -17,7 +23,7 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   const [, token] = authHeader.split(' ');
 
   try {
-    const decoded = jwt.verify(token, SECRET) as { id: number; email: string };
+    const decoded = jwt.verify(token, SECRET) as JwtPayload;
     req.user = decoded;
 
     next();

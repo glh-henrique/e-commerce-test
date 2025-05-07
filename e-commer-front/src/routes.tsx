@@ -1,9 +1,10 @@
 import React, { useContext, type JSX, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
-import Loading from './components/Loading'; // Import your Loading component
+import Loading from './components/Loading';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const CartPage = lazy(() => import('./pages/Cart'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const ProductFormPage = lazy(() => import('./pages/ProductFormPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -19,6 +20,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/products" element={<PrivateRoute><ProductsPage /></PrivateRoute>} />
+        <Route path="/cart" element={<PrivateRoute><CartPage /></PrivateRoute>} />
         <Route path="/products/new" element={<PrivateRoute><ProductFormPage /></PrivateRoute>} />
         <Route path="/products/:id" element={<PrivateRoute><ProductFormPage /></PrivateRoute>} />
         <Route path="*" element={<NotFoundPage />} />

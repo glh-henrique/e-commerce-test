@@ -7,37 +7,71 @@ import api from '../services/api';
 
 const ProductFormPage: React.FC = () => {
   const nav = useNavigate();
-  const { id } = useParams<{id:string}>();
+  const { id } = useParams<{ id: string }>();
   const editMode = Boolean(id);
-  const [form, setForm] = useState({ name:'', price:0, stock:0 });
+  const [form, setForm] = useState({ name: '', price: 0, stock: 0 });
   const [loading, setLoading] = useState(editMode);
 
   useEffect(() => {
-    if(editMode) api.get(`/products/${id}`)
-      .then(r=> setForm(r.data))
-      .catch(()=>{})
-      .finally(()=> setLoading(false));
+    if (editMode) api.get(`/products/${id}`)
+      .then(r => setForm(r.data))
+      .catch(() => { })
+      .finally(() => setLoading(false));
   }, [editMode]);
 
-  const submit = (e:React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const req = editMode ? api.put(`/products/${id}`, form)
-                         : api.post('/products', form);
-    req.then(()=> nav('/products')).catch(()=>{});
+      : api.post('/products', form);
+    req.then(() => nav('/products')).catch(() => { });
   };
 
   return loading ? <Loading /> : (
     <form onSubmit={submit} className="p-4 max-w-md mx-auto">
       <h2 className="text-2xl mb-4">{editMode ? 'Edit' : 'New'} Product</h2>
-      <input type="text" placeholder="Name" value={form.name}
-        onChange={e=>setForm({...form, name:e.target.value})}
-        className="w-full mb-3 p-2 border rounded" required />
-      <input type="number" placeholder="Price" value={form.price}
-        onChange={e=>setForm({...form, price: +e.target.value})}
-        className="w-full mb-3 p-2 border rounded" required />
-      <input type="number" placeholder="Stock" value={form.stock}
-        onChange={e=>setForm({...form, stock: +e.target.value})}
-        className="w-full mb-3 p-2 border rounded" required />
+      <div className='mb-2'>
+        <label htmlFor="price" className="block text-sm/6 font-medium">
+          Product Name
+        </label>
+        <input
+          name='name'
+          type="text"
+          placeholder="Product Name"
+          value={form.name}
+          onChange={e => setForm({ ...form, name: e.target.value })}
+          className="w-full mb-3 p-2 border rounded"
+          required
+        />
+      </div>
+      <div className='mb-2'>
+        <label htmlFor="price" className="block text-sm/6 font-medium">
+          Price
+        </label>
+        <input
+          name='price'
+          type="number"
+          placeholder="Price"
+          value={form.price}
+          onChange={e => setForm({ ...form, price: +e.target.value })}
+          className="w-full mb-3 p-2 border rounded"
+          required
+        />
+      </div>
+      <div className='mb-2'>
+        <label htmlFor="stock" className="block text-sm/6 font-medium">
+          Stock
+        </label>
+        <input
+          name='stock'
+          type="number"
+          placeholder="Stock"
+          value={form.stock}
+          onChange={e => setForm({ ...form, stock: +e.target.value })}
+          className="w-full mb-3 p-2 border rounded"
+          required
+        />
+      </div>
+
       <button type="submit" className="px-4 py-2 bg-blue-500 rounded text-white">Save</button>
     </form>
   );

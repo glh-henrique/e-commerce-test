@@ -1,10 +1,10 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading';
 
 const LoginPage: React.FC = () => {
-  const { login } = useContext(AuthContext);
+  const { user, login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,13 +17,23 @@ const LoginPage: React.FC = () => {
     setError('');
     try {
       await login(email, password);
-      navigate('/products');
+      navigate('/products', { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error logging in');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate('/products', { replace: true });
+    }
+  }, [user, navigate]);
+
+  if (user) {
+    return <Loading />;
+  }
 
   return loading ? <Loading /> : (
     <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
@@ -32,12 +42,12 @@ const LoginPage: React.FC = () => {
         {error && <p className="text-red-500 mb-2">{error}</p>}
         <div className="mb-4">
           <label className="block text-gray-700 dark:text-gray-300">Email</label>
-          <input 
-            type="email" 
-            required 
-            value={email} 
-            onChange={e => setEmail(e.target.value)} 
-            className="w-full mt-1 p-2 border rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full mt-1 p-2 border rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
           />
         </div>
         <div className="mb-4">

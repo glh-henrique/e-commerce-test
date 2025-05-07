@@ -13,22 +13,16 @@ export const login = (req: Request, res: Response): void => {
     return;
   }
 
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email
-    },
-    SECRET,
-    {
-      expiresIn: '1h'
-    }
-  );
+  const payload = {
+    id: user.id,
+    email: user.email,
+    role: user.role
+  };
+
+  const token = jwt.sign(payload, SECRET, { expiresIn: '1h' });
 
   res.json({
     token,
-    user: {
-      id: user.id,
-      email: user.email
-    }
+    user: payload
   });
 };
